@@ -1,0 +1,11 @@
+{
+  "agents": [
+    "learn-agent"
+  ],
+  "skills": [
+    "learn"
+  ],
+  "commands": [
+    "learn"
+  ]
+}
