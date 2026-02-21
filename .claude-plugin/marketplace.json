@@ -1,0 +1,22 @@
+{
+  "name": "learn",
+  "description": "Research topics online and create comprehensive learning guides with RAG-optimized indexes",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Avi Fenesh",
+    "url": "https://github.com/avifenesh"
+  },
+  "repository": "https://github.com/agent-sh/learn",
+  "keywords": [
+    "learn"
+  ],
+  "plugins": [
+    {
+      "name": "learn",
+      "source": ".",
+      "description": "Research topics online and create comprehensive learning guides with RAG-optimized indexes",
+      "version": "1.0.0",
+      "category": "productivity"
+    }
+  ]
+}
