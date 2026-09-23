@@ -343,7 +343,7 @@ Estimated token usage by phase:
 | Fetch and extraction | ~40,000 | 20 sources × 2,000 avg |
 | Synthesis | ~10,000 | Guide generation |
 | Enhancement (optional) | ~5,000 | Two skill calls |
-| **Total** | ~60,000 | Within opus budget |
+| **Total** | ~60,000 | Fits a single agent context |
 
 ## Integration
 
