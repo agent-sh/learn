@@ -91,7 +91,7 @@ If a guide already exists for the topic, you are prompted to either update the e
 | Component | Type | Model | Role |
 |-----------|------|-------|------|
 | `learn` | command | - | Entry point, argument parsing |
-| `learn-agent` | agent | inherit | Research coordination, web search, synthesis |
+| `learn-agent` | agent | sonnet | Research coordination, web search, synthesis |
 | `learn` | skill | - | Research methodology, scoring rubric, templates |
 
 ## Requirements
