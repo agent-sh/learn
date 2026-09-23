@@ -43,7 +43,7 @@ The learn skill follows a six-stage methodology:
 
 5. **RAG index** - The master index (`agent-knowledge/CLAUDE.md` and `AGENTS.md`) is updated with the new topic, trigger phrases, and keyword mappings so agents can find relevant guides automatically.
 
-6. **Enhancement** - Runs `enhance:enhance-docs` and `enhance:enhance-prompts` on the output to improve RAG retrieval quality. Skip with `--no-enhance`.
+6. **Enhancement** - Runs `enhance:enhance-docs` and `enhance:enhance-prompts` on the output to improve RAG retrieval quality. Off by default; turn it on with `--enhance` when the enhance plugin is installed.
 
 ## Usage
 
@@ -57,8 +57,8 @@ The learn skill follows a six-stage methodology:
 # Quick overview (10 sources)
 /learn python decorators --depth=brief
 
-# Skip enhancement pass
-/learn typescript generics --no-enhance
+# Add the optional enhancement pass (needs the enhance plugin)
+/learn typescript generics --enhance
 ```
 
 ### Depth Levels
@@ -84,26 +84,26 @@ agent-knowledge/
 
 ### Existing Topics
 
-If a guide already exists for the topic, you are prompted to either update the existing guide with new sources or start fresh.
+If a guide already exists for the topic, you are prompted to either update the existing guide with new sources or start fresh. Harnesses without a question tool update the existing guide.
 
 ## Architecture
 
 | Component | Type | Model | Role |
 |-----------|------|-------|------|
 | `learn` | command | - | Entry point, argument parsing |
-| `learn-agent` | agent | sonnet | Research coordination, web search, synthesis |
+| `learn-agent` | agent | inherit | Research coordination, web search, synthesis |
 | `learn` | skill | - | Research methodology, scoring rubric, templates |
 
 ## Requirements
 
 - [agentsys](https://github.com/agent-sh/agentsys) runtime
-- Web access (WebSearch and WebFetch tools)
+- Web access: the built-in WebSearch and WebFetch tools, or an MCP server named `harness-web` that exposes `websearch` and `webfetch`
 - An `agent-knowledge/` directory in the workspace (created automatically)
 
 ## Related Plugins
 
 - [agent-knowledge](https://github.com/agent-sh/agent-knowledge) - Where guides are stored; contains existing research
-- [enhance](https://github.com/agent-sh/enhance) - Post-processing for RAG optimization
+- [enhance](https://github.com/agent-sh/enhance) - Optional post-processing for RAG optimization (`--enhance`)
 - [consult](https://github.com/agent-sh/consult) - For getting a second opinion on specific questions instead of building a full guide
 
 ## License
