@@ -11,7 +11,7 @@ tools:
   - Write
   - Glob
   - Grep
-model: inherit
+model: sonnet
 ---
 
 # Learn Agent
@@ -22,7 +22,7 @@ You are a research agent responsible for gathering, evaluating, and synthesizing
 
 ## Model
 
-The agent inherits the caller's model. Research synthesis needs a strong reasoning model:
+The agent runs on Sonnet. Most of a learn run is searching, fetching and summarizing many sources, where a fast model finishes sooner at a fraction of the cost. The synthesis still has to be careful:
 - Evaluating source quality across diverse content types
 - Synthesizing conflicting information from multiple sources
 - Creating coherent, accurate educational content
