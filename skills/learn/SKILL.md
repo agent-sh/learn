@@ -1,7 +1,7 @@
 ---
 name: learn
 description: "Research any topic online and create learning guides. Use when user asks to 'learn about', 'research topic', 'create learning guide', 'build knowledge base', or 'study subject'."
-version: 5.1.0
+version: 5.2.0
 argument-hint: "[topic] [--depth=brief|medium|deep]"
 ---
 
@@ -55,7 +55,7 @@ Use funnel approach to avoid noise from long query lists:
 ```
 "{topic} advanced techniques"
 "{topic} pitfalls mistakes avoid"
-"{topic} 2025 2026 latest"
+"{topic} latest changes release notes"   (harness-web: time_range "year")
 ```
 
 ### 2. Source Quality Scoring
@@ -76,10 +76,12 @@ Multi-dimensional evaluation (max score: 100):
 
 Don't pre-load all content (causes context rot):
 
-1. **Collect URLs first** via WebSearch
+1. **Collect URLs first** via `WebSearch`, or `mcp__harness-web__websearch` when that is the search tool present
 2. **Score based on metadata** (title, description, URL)
-3. **Fetch only selected sources** via WebFetch
+3. **Fetch only selected sources** via `WebFetch`, or `mcp__harness-web__webfetch` (returns markdown, no `prompt` argument: extract from the text yourself)
 4. **Extract summaries** (not full content)
+
+Prefer the built-in tools when both exist. With no web search tool at all, stop and report it.
 
 ### 4. Content Extraction Guidelines
 
@@ -274,9 +276,9 @@ Before finalizing, rate output (1-10):
 
 **Flag gaps**: Note any important subtopics not covered.
 
-## Enhancement Integration
+## Enhancement Integration (optional)
 
-If enhance=true, invoke after guide creation:
+Off by default. Runs only when enhance=true and the `enhance` plugin is installed (its skills are listed in the session). When it is absent, skip silently and report `"enhanced": false`.
 
 ```javascript
 // Enhance the topic guide for RAG
@@ -313,7 +315,7 @@ Return structured JSON between markers:
     "accuracy": 8,
     "gaps": ["tail recursion optimization not covered"]
   },
-  "enhanced": true,
+  "enhanced": false,
   "indexUpdated": true
 }
 === END_RESULT ===
@@ -323,8 +325,9 @@ Return structured JSON between markers:
 
 | Error | Action |
 |-------|--------|
-| WebSearch fails | Retry with simpler query |
-| WebFetch timeout | Skip source, note in metadata |
+| Search fails | Retry with simpler query |
+| Fetch timeout | Skip source, note in metadata |
+| No web search tool | Stop and report it |
 | <minSources found | Warn user, proceed with available |
 | Enhancement fails | Skip, note in output |
 | Index doesn't exist | Create new index |
@@ -335,12 +338,12 @@ Estimated token usage by phase:
 
 | Phase | Tokens | Notes |
 |-------|--------|-------|
-| WebSearch queries | ~2,000 | 5-8 queries |
+| Search queries | ~2,000 | 5-8 queries |
 | Source scoring | ~1,000 | Metadata only |
-| WebFetch extraction | ~40,000 | 20 sources × 2,000 avg |
+| Fetch and extraction | ~40,000 | 20 sources × 2,000 avg |
 | Synthesis | ~10,000 | Guide generation |
-| Enhancement | ~5,000 | Two skill calls |
-| **Total** | ~60,000 | Within opus budget |
+| Enhancement (optional) | ~5,000 | Two skill calls |
+| **Total** | ~60,000 | Fits a single agent context |
 
 ## Integration
 

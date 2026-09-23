@@ -1,7 +1,7 @@
 ---
 description: Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic", or wants to gather online resources on any subject.
 codex-description: 'Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic". Gathers online sources and synthesizes comprehensive guide with RAG index.'
-argument-hint: "[topic] [--depth=brief|medium|deep]"
+argument-hint: "[topic] [--depth=brief|medium|deep] [--enhance]"
 allowed-tools: Task, Read, Write, Glob, AskUserQuestion
 ---
 
@@ -23,7 +23,7 @@ Parse from $ARGUMENTS:
 
 - **topic**: The subject to learn about (required)
 - **--depth**: `brief` (10 sources), `medium` (20, default), or `deep` (40)
-- **--no-enhance**: Skip enhancement pass (default: enhance enabled)
+- **--enhance**: Run the optional enhancement pass (default: off). Needs the `enhance` plugin; skipped silently when it is not installed.
 
 ## Execution
 
@@ -35,12 +35,12 @@ const args = '$ARGUMENTS';
 // Extract depth flag
 const depthMatch = args.match(/--depth=(brief|medium|deep)/);
 const depth = depthMatch ? depthMatch[1] : 'medium';
-const noEnhance = args.includes('--no-enhance');
+const enhance = /(^|\s)--enhance(\s|$)/.test(args); // --no-enhance is accepted and is the default
 
 // Extract topic (everything except flags)
 const topic = args
   .replace(/--depth=(brief|medium|deep)/g, '')
-  .replace(/--no-enhance/g, '')
+  .replace(/--(no-)?enhance/g, '')
   .trim();
 
 if (!topic) {
@@ -69,6 +69,7 @@ const existingGuide = await Glob({ pattern: `agent-knowledge/${slug}.md` });
 
 if (existingGuide.length > 0) {
   // Ask user: update existing or create fresh?
+  // Without AskUserQuestion (Codex, OpenCode), default to 'Update existing' and say so.
   const choice = await AskUserQuestion({
     questions: [{
       question: `A guide for "${topic}" already exists. What would you like to do?`,
@@ -92,14 +93,13 @@ if (existingGuide.length > 0) {
 ```javascript
 const taskOutput = await Task({
   subagent_type: "learn:learn-agent",
-  model: "opus",
   prompt: `Research and create a learning guide.
 
 Topic: ${topic}
 Slug: ${slug}
 Depth: ${depth}
 Min Sources: ${minSources}
-Enhance: ${!noEnhance}
+Enhance: ${enhance}
 
 Output directory: agent-knowledge/
 
@@ -176,7 +176,7 @@ agent-knowledge/
 | Error | Action |
 |-------|--------|
 | No topic provided | Show usage help |
-| WebSearch fails | Retry with alternative queries |
+| Web search fails | Retry with alternative queries |
 | Insufficient sources | Warn user, proceed with available |
 | Enhancement fails | Skip enhancement, note in output |
 
@@ -186,5 +186,5 @@ agent-knowledge/
 /learn recursion
 /learn react hooks --depth=deep
 /learn "kubernetes networking" --depth=brief
-/learn python async --no-enhance
+/learn python async --enhance
 ```
