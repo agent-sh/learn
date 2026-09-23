@@ -5,125 +5,47 @@ argument-hint: "[topic] [--depth=brief|medium|deep] [--enhance]"
 allowed-tools: Task, Read, Write, Glob, AskUserQuestion
 ---
 
-# /learn - Learning Guide Generator
+# /learn
 
-Research any topic by gathering online resources and synthesize into a comprehensive learning guide with RAG-optimized indexes.
-
-## Depth Levels
-
-| Level | Sources | Use Case |
-|-------|---------|----------|
-| `brief` | 10 | Quick overview, time-sensitive |
-| `medium` | 20 | **Default** - balanced coverage |
-| `deep` | 40 | Comprehensive, academic depth |
+Research a topic online and write a cited learning guide to `agent-knowledge/{slug}.md`, with source metadata and a RAG index that later sessions read.
 
 ## Arguments
 
-Parse from $ARGUMENTS:
+From `$ARGUMENTS`:
 
-- **topic**: The subject to learn about (required)
-- **--depth**: `brief` (10 sources), `medium` (20, default), or `deep` (40)
-- **--enhance**: Run the optional enhancement pass (default: off). Needs the `enhance` plugin; skipped silently when it is not installed.
+- **topic**: everything that is not a flag. Required. With no topic, reply `Usage: /learn <topic> [--depth=brief|medium|deep] [--enhance]` and stop.
+- **--depth**: `brief` (10 sources), `medium` (20, default), `deep` (40).
+- **--enhance**: run the optional enhancement pass. Off by default, skipped when the `enhance` plugin is not installed. `--no-enhance` is accepted and means the default.
 
-## Execution
+**slug**: the topic lowercased, characters other than `a-z`, `0-9`, space and `-` removed, runs of spaces and dashes collapsed to one `-`, leading and trailing `-` trimmed, cut to 64 characters. Existing guides are found by this name, so derive it exactly.
 
-### Phase 1: Parse Arguments
+## Existing guide
 
-```javascript
-const args = '$ARGUMENTS';
+If `agent-knowledge/{slug}.md` exists, ask whether to update it (add new sources, refresh content) or start fresh. Without AskUserQuestion, update it and say so in the reply: an update keeps the user's earlier work, a fresh run discards it.
 
-// Extract depth flag
-const depthMatch = args.match(/--depth=(brief|medium|deep)/);
-const depth = depthMatch ? depthMatch[1] : 'medium';
-const enhance = /(^|\s)--enhance(\s|$)/.test(args); // --no-enhance is accepted and is the default
+## Run
 
-// Extract topic (everything except flags)
-const topic = args
-  .replace(/--depth=(brief|medium|deep)/g, '')
-  .replace(/--(no-)?enhance/g, '')
-  .trim();
+Spawn `learn:learn-agent` with:
 
-if (!topic) {
-  return 'Usage: /learn <topic> [--depth=brief|medium|deep]';
-}
-
-// Generate slug for filenames
-const slug = topic
-  .toLowerCase()
-  .replace(/[^a-z0-9\s-]/g, '')
-  .replace(/\s+/g, '-')
-  .replace(/-+/g, '-')
-  .replace(/^-|-$/g, '')
-  .substring(0, 64);
-
-// Source counts by depth
-const sourceCounts = { brief: 10, medium: 20, deep: 40 };
-const minSources = sourceCounts[depth];
 ```
+Research and create a learning guide.
 
-### Phase 2: Check Existing Guide
-
-```javascript
-// Check if guide already exists
-const existingGuide = await Glob({ pattern: `agent-knowledge/${slug}.md` });
-
-if (existingGuide.length > 0) {
-  // Ask user: update existing or create fresh?
-  // Without AskUserQuestion (Codex, OpenCode), default to 'Update existing' and say so.
-  const choice = await AskUserQuestion({
-    questions: [{
-      question: `A guide for "${topic}" already exists. What would you like to do?`,
-      header: 'Existing guide',
-      options: [
-        { label: 'Update existing', description: 'Add new sources and refresh content' },
-        { label: 'Create fresh', description: 'Start over with new research' }
-      ],
-      multiSelect: false
-    }]
-  });
-
-  if (choice === 'Create fresh') {
-    // Will overwrite
-  }
-}
-```
-
-### Phase 3: Spawn Learn Agent
-
-```javascript
-const taskOutput = await Task({
-  subagent_type: "learn:learn-agent",
-  prompt: `Research and create a learning guide.
-
-Topic: ${topic}
-Slug: ${slug}
-Depth: ${depth}
-Min Sources: ${minSources}
-Enhance: ${enhance}
+Topic: {topic}
+Slug: {slug}
+Depth: {depth}
+Min Sources: {10|20|40}
+Enhance: {true|false}
+Existing guide: {update|fresh|none}
 
 Output directory: agent-knowledge/
-
-Create:
-1. ${slug}.md - Comprehensive learning guide
-2. resources/${slug}-sources.json - Source metadata with confidence ratings
-3. Update CLAUDE.md and AGENTS.md master indexes
-
-Return structured results between === LEARN_RESULT === markers.`
-});
+Return structured results between === LEARN_RESULT === markers.
 ```
 
-### Phase 4: Parse Results
+Without the Task tool, do the same work in this session: load the `learn` skill (or read the plugin's `skills/learn/SKILL.md`) with the same inputs.
 
-```javascript
-function parseLearnResult(output) {
-  const match = output.match(/=== LEARN_RESULT ===[\s\S]*?({[\s\S]*?})[\s\S]*?=== END_RESULT ===/);
-  return match ? JSON.parse(match[1]) : null;
-}
+Read the JSON between `=== LEARN_RESULT ===` and `=== END_RESULT ===`. If it is missing or does not parse, report what the agent returned and which files exist; do not invent numbers.
 
-const result = parseLearnResult(taskOutput);
-```
-
-### Phase 5: Present Results
+## Reply
 
 ```markdown
 ## Learning Guide Created
@@ -132,59 +54,34 @@ const result = parseLearnResult(taskOutput);
 **File**: agent-knowledge/{slug}.md
 **Sources**: {sourceCount} resources analyzed
 
-### Quality Assessment
-
 | Metric | Rating |
 |--------|--------|
 | Coverage | {coverage}/10 |
 | Source Diversity | {diversity}/10 |
 | Example Quality | {examples}/10 |
-| Confidence | {confidence}/10 |
-
-### Source Breakdown
+| Accuracy | {accuracy}/10 |
 
 | Type | Count |
 |------|-------|
-| Official Docs | {n} |
-| Tutorials | {n} |
-| Q&A/Stack Overflow | {n} |
-| Blog Posts | {n} |
-| GitHub Examples | {n} |
+| Official Docs | {officialDocs} |
+| Tutorials | {tutorials} |
+| Q&A | {stackOverflow} |
+| Blog Posts | {blogPosts} |
+| GitHub | {github} |
 
-### Next Steps
-
-- [ ] Review the guide at `agent-knowledge/{slug}.md`
-- [ ] Check source quality in `agent-knowledge/resources/{slug}-sources.json`
-- [ ] Run `/learn {related-topic}` to expand your knowledge base
+**Gaps**: {gaps, or "none"}
 ```
 
-## Output Structure
+Add a line when the source target was not met, the guide was updated rather than created, or enhancement was asked for and skipped.
 
-Each `/learn` run creates/updates:
+## Files written
 
 ```
 agent-knowledge/
-  CLAUDE.md           # Master index (updated)
-  AGENTS.md           # Master index for OpenCode/Codex (updated)
-  {slug}.md           # Topic-specific guide (created)
-  resources/
-    {slug}-sources.json  # Source metadata (created)
+  CLAUDE.md                  # master index (updated)
+  AGENTS.md                  # same index for Codex and OpenCode (updated)
+  {slug}.md                  # the guide
+  resources/{slug}-sources.json
 ```
 
-## Error Handling
-
-| Error | Action |
-|-------|--------|
-| No topic provided | Show usage help |
-| Web search fails | Retry with alternative queries |
-| Insufficient sources | Warn user, proceed with available |
-| Enhancement fails | Skip enhancement, note in output |
-
-## Example Usage
-
-```bash
-/learn recursion
-/learn react hooks --depth=deep
-/learn "kubernetes networking" --depth=brief
-/learn python async --enhance
-```
+Examples: `/learn recursion`, `/learn react hooks --depth=deep`, `/learn "kubernetes networking" --depth=brief`, `/learn python async --enhance`.
