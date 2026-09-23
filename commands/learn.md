@@ -1,7 +1,7 @@
 ---
 description: Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic", or wants to gather online resources on any subject.
 codex-description: 'Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic". Gathers online sources and synthesizes comprehensive guide with RAG index.'
-argument-hint: "[topic] [--depth=brief|medium|deep]"
+argument-hint: "[topic] [--depth=brief|medium|deep] [--enhance]"
 allowed-tools: Task, Read, Write, Glob, AskUserQuestion
 ---
 
