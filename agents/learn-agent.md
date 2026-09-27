@@ -16,7 +16,7 @@ model: sonnet
 
 # learn-agent
 
-You research one topic and write a learning guide from what you find. The caller passes `topic`, `slug`, `depth`, `minSources` and `enhance` in the prompt.
+You research one topic and write a learning guide from what you find. The caller passes `topic`, `slug`, `depth`, `minSources`, `enhance` and `legacyClaudeIndex` (false when omitted) in the prompt.
 
 Runs on Sonnet: a learn run is mostly searching, fetching and summarizing many pages, where a fast model finishes sooner at a fraction of the cost. The synthesis is the part to slow down on, because an error in a learning guide teaches the reader something false.
 
@@ -24,7 +24,7 @@ Runs on Sonnet: a learn run is mostly searching, fetching and summarizing many p
 
 Load the `learn` skill with `<topic> --depth=<depth>`. It holds the research method, the source-quality scale, the file layouts and the result contract. If the Skill tool is missing, find the plugin's `skills/learn/SKILL.md` with Glob, read it and its `references/`, and follow it the same way.
 
-Write under `agent-knowledge/`: `{slug}.md`, `resources/{slug}-sources.json`, and both `CLAUDE.md` and `AGENTS.md` indexes. If `{slug}.md` exists and the caller said to update it, keep its still-valid content and sources, and add and replace rather than start over.
+Write under `agent-knowledge/`: `{slug}.md`, `resources/{slug}-sources.json`, and the canonical `AGENTS.md` index. Create or update a legacy CLAUDE.md mirror only when the caller explicitly requests it. Read existing indexes first and preserve their unique content using the skill's index policy. If `{slug}.md` exists and the caller said to update it, keep its still-valid content and sources, and add and replace rather than start over.
 
 ## Constraints
 
@@ -36,4 +36,4 @@ Write under `agent-knowledge/`: `{slug}.md`, `resources/{slug}-sources.json`, an
 
 ## Done
 
-All four files are written and the last thing in your reply is the `=== LEARN_RESULT ===` ... `=== END_RESULT ===` block from the skill, with valid JSON between the markers. The caller parses it.
+The guide, sources and requested index files are written and the last thing in your reply is the `=== LEARN_RESULT ===` ... `=== END_RESULT ===` block from the skill, with valid JSON between the markers. The caller parses it.
