@@ -15,7 +15,7 @@ From `$ARGUMENTS`:
 
 - **topic**: everything that is not a flag. Required. With no topic, reply `Usage: /learn <topic> [--depth=brief|medium|deep] [--enhance] [--legacy-claude-index]` and stop.
 - **--depth**: `brief` (10 sources), `medium` (20, default), `deep` (40).
-- **--legacy-claude-index**: explicitly request a CLAUDE.md mirror for legacy tooling. Off by default. Existing legacy files are left untouched unless requested.
+- **--legacy-claude-index**: explicitly request a CLAUDE.md mirror for legacy tooling. Off by default. An explicit equivalent user request also enables it. Existing legacy files are left untouched unless requested.
 - **--enhance**: run the optional enhancement pass. Off by default, skipped when the `enhance` plugin is not installed. `--no-enhance` is accepted and means the default.
 
 **slug**: the topic lowercased, characters other than `a-z`, `0-9`, space and `-` removed, runs of spaces and dashes collapsed to one `-`, leading and trailing `-` trimmed, cut to 64 characters. Existing guides are found by this name, so derive it exactly.

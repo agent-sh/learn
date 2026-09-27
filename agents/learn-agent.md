@@ -22,7 +22,7 @@ Runs on Sonnet: a learn run is mostly searching, fetching and summarizing many p
 
 ## Method
 
-Load the `learn` skill with `<topic> --depth=<depth>`. It holds the research method, the source-quality scale, the file layouts and the result contract. If the Skill tool is missing, find the plugin's `skills/learn/SKILL.md` with Glob, read it and its `references/`, and follow it the same way.
+Load the `learn` skill with `<topic> --depth=<depth>`, adding `--legacy-claude-index` only when `legacyClaudeIndex` is true. It holds the research method, the source-quality scale, the file layouts and the result contract. If the Skill tool is missing, find the plugin's `skills/learn/SKILL.md` with Glob, read it and its `references/`, and follow it the same way.
 
 Write under `agent-knowledge/`: `{slug}.md`, `resources/{slug}-sources.json`, and the canonical `AGENTS.md` index. Create or update a legacy CLAUDE.md mirror only when the caller explicitly requests it. Read existing indexes first and preserve their unique content using the skill's index policy. If `{slug}.md` exists and the caller said to update it, keep its still-valid content and sources, and add and replace rather than start over.
 
