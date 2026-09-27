@@ -41,7 +41,7 @@ The learn skill follows a six-stage methodology:
 
 4. **Synthesis** - A structured learning guide is generated with prerequisites, core concepts, code examples, common pitfalls, best practices, and further reading. Content is cross-referenced across sources, not copied from any single one.
 
-5. **RAG index** - The master index (`agent-knowledge/CLAUDE.md` and `AGENTS.md`) is updated with the new topic, trigger phrases, and keyword mappings so agents can find relevant guides automatically.
+5. **RAG index** - The canonical master index (`agent-knowledge/AGENTS.md`) is updated with the new topic, trigger phrases, and keyword mappings so agents can find relevant guides automatically.
 
 6. **Enhancement** - Runs `enhance:enhance-docs` and `enhance:enhance-prompts` on the output to improve RAG retrieval quality. Off by default; turn it on with `--enhance` when the enhance plugin is installed.
 
@@ -75,12 +75,13 @@ Each run creates or updates:
 
 ```
 agent-knowledge/
-  CLAUDE.md                       # Master index (updated)
-  AGENTS.md                       # Master index for OpenCode/Codex (updated)
+  AGENTS.md                       # Canonical master index (updated)
   <topic-slug>.md                 # Synthesized learning guide
   resources/
     <topic-slug>-sources.json     # Source metadata with quality scores
 ```
+
+Legacy tooling can request an additional CLAUDE.md mirror with `--legacy-claude-index`. Without that explicit request, existing legacy indexes are read for preservation but left untouched, and no mirror is created. Existing entries and unique guidance are preserved before index updates.
 
 ### Existing Topics
 

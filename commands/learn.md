@@ -1,7 +1,7 @@
 ---
 description: Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic", or wants to gather online resources on any subject.
 codex-description: 'Use when user asks to "learn about topic", "research subject", "create learning guide", "build knowledge base", "study topic". Gathers online sources and synthesizes comprehensive guide with RAG index.'
-argument-hint: "[topic] [--depth=brief|medium|deep] [--enhance]"
+argument-hint: "[topic] [--depth=brief|medium|deep] [--enhance] [--legacy-claude-index]"
 allowed-tools: Task, Read, Write, Glob, AskUserQuestion
 ---
 
@@ -13,8 +13,9 @@ Research a topic online and write a cited learning guide to `agent-knowledge/{sl
 
 From `$ARGUMENTS`:
 
-- **topic**: everything that is not a flag. Required. With no topic, reply `Usage: /learn <topic> [--depth=brief|medium|deep] [--enhance]` and stop.
+- **topic**: everything that is not a flag. Required. With no topic, reply `Usage: /learn <topic> [--depth=brief|medium|deep] [--enhance] [--legacy-claude-index]` and stop.
 - **--depth**: `brief` (10 sources), `medium` (20, default), `deep` (40).
+- **--legacy-claude-index**: explicitly request a CLAUDE.md mirror for legacy tooling. Off by default. An explicit equivalent user request also enables it. Existing legacy files are left untouched unless requested.
 - **--enhance**: run the optional enhancement pass. Off by default, skipped when the `enhance` plugin is not installed. `--no-enhance` is accepted and means the default.
 
 **slug**: the topic lowercased, characters other than `a-z`, `0-9`, space and `-` removed, runs of spaces and dashes collapsed to one `-`, leading and trailing `-` trimmed, cut to 64 characters. Existing guides are found by this name, so derive it exactly.
@@ -35,6 +36,7 @@ Slug: {slug}
 Depth: {depth}
 Min Sources: {10|20|40}
 Enhance: {true|false}
+Legacy CLAUDE index: {true|false, default false}
 Existing guide: {update|fresh|none}
 
 Output directory: agent-knowledge/
@@ -78,10 +80,11 @@ Add a line when the source target was not met, the guide was updated rather than
 
 ```
 agent-knowledge/
-  CLAUDE.md                  # master index (updated)
-  AGENTS.md                  # same index for Codex and OpenCode (updated)
+  AGENTS.md                  # canonical master index (updated)
   {slug}.md                  # the guide
   resources/{slug}-sources.json
 ```
+
+A CLAUDE.md mirror is written only when explicitly requested with `--legacy-claude-index` or an equivalent user instruction.
 
 Examples: `/learn recursion`, `/learn react hooks --depth=deep`, `/learn "kubernetes networking" --depth=brief`, `/learn python async --enhance`.
