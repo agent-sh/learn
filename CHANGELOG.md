@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+## [1.3.0] - 2026-10-06
+
+### Added
+- `--legacy-claude-index` flag on `/learn`, passed to `learn-agent` as `legacyClaudeIndex` (false when omitted). It requests an extra `agent-knowledge/CLAUDE.md` mirror for legacy tooling. An equivalent explicit user request also enables it. The mirror is written from the finalized `AGENTS.md` index, after the optional enhancement pass.
+
+### Changed
+- The master index defaults to `agent-knowledge/AGENTS.md` alone. `/learn` no longer writes `agent-knowledge/CLAUDE.md` unless the legacy flag asks for it. Existing legacy files are left untouched by default.
+- Existing indexes are read before any write, and their topic entries and unique guidance are kept. If only a legacy index exists, its valid content is carried into `AGENTS.md` and the legacy file is left as is.
+- The optional enhancement pass runs `enhance:enhance-prompts` on `agent-knowledge/AGENTS.md`.
+- README, command, agent, skill and templates describe the new default.
+
 ## [1.2.0] - 2026-09-24
 
 ### Changed
