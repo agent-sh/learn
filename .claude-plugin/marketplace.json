@@ -1,7 +1,7 @@
 {
   "name": "learn",
   "description": "Research topics online and create comprehensive learning guides with RAG-optimized indexes",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "owner": {
     "name": "Avi Fenesh",
     "url": "https://github.com/avifenesh"
@@ -15,7 +15,7 @@
       "name": "learn",
       "source": ".",
       "description": "Research topics online and create comprehensive learning guides with RAG-optimized indexes",
-      "version": "1.0.0",
+      "version": "1.3.0",
       "category": "productivity"
     }
   ]

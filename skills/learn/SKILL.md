@@ -1,7 +1,7 @@
 ---
 name: learn
 description: "Research a topic online and write a learning guide with a RAG index. Use when the user asks to learn about, research, or study a subject, or to build a knowledge base on it."
-version: 5.3.0
+version: 5.4.0
 argument-hint: "[topic] [--depth=brief|medium|deep] [--legacy-claude-index]"
 ---
 
