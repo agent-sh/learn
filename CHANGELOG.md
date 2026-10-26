@@ -7,6 +7,7 @@
 
 ### Removed
 - `lib/sources/` (next-task's task-source questions) and `releaseTask` in `lib/state/workflow-state.js`: nothing in learn called them.
+- The retired repo-intel plugin's own code in `lib/`: the embed submodule, the summarizer and weighter helpers (`lib/repo-intel/enrich.js`), `applyDescriptors` and `applySummary`, and `lib/binary/shared-helpers.js`, which only the embed binary used. Nothing in learn called them.
 
 ## [1.3.0] - 2026-10-06
 
