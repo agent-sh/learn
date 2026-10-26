@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+- `lib/` is maintained in this repository; the agent-core sync ended. `.agnix.toml` drops the six suppressions that existed only for the agent-core AGENTS.md template (PE-001, PE-005, CC-MEM-004, CC-MEM-005, CC-MEM-006, CC-MEM-008); the lint result is unchanged.
+
+### Removed
+- `lib/sources/` (next-task's task-source questions) and `releaseTask` in `lib/state/workflow-state.js`: nothing in learn called them.
+
 ## [1.3.0] - 2026-10-06
 
 ### Added
