@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+- README: install through the Claude Code marketplace (`/plugin install learn@agentsys`) or the agentsys npm installer; drop the links to the deleted enhance and consult repos.
 - `lib/` is maintained in this repository; the agent-core sync ended. `.agnix.toml` drops the six suppressions that existed only for the agent-core AGENTS.md template (PE-001, PE-005, CC-MEM-004, CC-MEM-005, CC-MEM-006, CC-MEM-008); the lint result is unchanged.
 
 ### Removed

@@ -15,11 +15,19 @@ Use cases:
 
 ## Installation
 
+Claude Code:
+
 ```bash
-agentsys install learn
+/plugin marketplace add agent-sh/agentsys
+/plugin install learn@agentsys
 ```
 
-Requires [agentsys](https://github.com/agent-sh/agentsys) to be set up in your project.
+Claude Code, OpenCode, Codex CLI, Cursor and Kiro, through the [agentsys](https://github.com/agent-sh/agentsys) installer:
+
+```bash
+npm install -g agentsys
+agentsys install learn
+```
 
 ## Quick Start
 
@@ -104,8 +112,6 @@ If a guide already exists for the topic, you are prompted to either update the e
 ## Related Plugins
 
 - [agent-knowledge](https://github.com/agent-sh/agent-knowledge) - Where guides are stored; contains existing research
-- [enhance](https://github.com/agent-sh/enhance) - Optional post-processing for RAG optimization (`--enhance`)
-- [consult](https://github.com/agent-sh/consult) - For getting a second opinion on specific questions instead of building a full guide
 
 ## License
 
